@@ -3,7 +3,7 @@ require 'msgpack'
 require 'json'
 
 module Fluent
-  class CqlRbOutput < BufferedOutput
+  class CqlOutput < BufferedOutput
     Fluent::Plugin.register_output('cql', self)
 
     config_param :host,          :string

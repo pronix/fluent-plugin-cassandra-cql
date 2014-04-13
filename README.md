@@ -37,7 +37,7 @@ via RubyGems
 
 ## Fluentd.conf Configuration
     <match cql_rb.**>
-      type cql_rb         # fluent output plugin file name (sans fluent_plugin_ prefix)
+      type cql         # fluent output plugin file name (sans fluent_plugin_ prefix)
       host 127.0.0.1             # cassandra hostname.
       port 9160                  # cassandra thrift port.
       keyspace FluentdLoggers    # cassandra keyspace
