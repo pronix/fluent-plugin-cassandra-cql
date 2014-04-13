@@ -4,7 +4,7 @@ require 'json'
 
 module Fluent
   class CqlRbOutput < BufferedOutput
-    Fluent::Plugin.register_output('cql_rb', self)
+    Fluent::Plugin.register_output('cql', self)
 
     config_param :host,          :string
     config_param :port,          :integer

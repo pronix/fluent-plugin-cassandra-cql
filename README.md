@@ -36,8 +36,8 @@ via RubyGems
     # NOTE: schema definition should match that specified in the Fluentd.conf configuration file (see below)
 
 ## Fluentd.conf Configuration
-    <match cassandra_cql.**>
-      type cassandra_cql         # fluent output plugin file name (sans fluent_plugin_ prefix)
+    <match cql_rb.**>
+      type cql_rb         # fluent output plugin file name (sans fluent_plugin_ prefix)
       host 127.0.0.1             # cassandra hostname.
       port 9160                  # cassandra thrift port.
       keyspace FluentdLoggers    # cassandra keyspace
