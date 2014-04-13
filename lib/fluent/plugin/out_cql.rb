@@ -10,7 +10,7 @@ module Fluent
     config_param :port,          :integer
     config_param :keyspace,      :string
     config_param :columnfamily,  :string
-    config_param :ttl,           :integer, :default => 0
+    config_param :ttl,           :integer, default: 0
     config_param :schema,        :string
     config_param :data_keys,     :string
 
@@ -69,8 +69,9 @@ module Fluent
     private
 
     def get_connection(host, port, keyspace)
-      client = ::Cql::Client.connect(hosts: [host], port: port.to_i)
+      client = ::Cql::Client.connect(hosts: [host], port: port.to_i, default_consistency: :one)
       client.use("\"#{keyspace}\"")
+      client
     end
 
     def build_insert_values_string(schema_keys, data_keys, record, pop_data_keys)

@@ -15,13 +15,13 @@ CONFIG = %[
   pop_data_keys true
 ]
 
-describe Fluent::CqlRbOutput do
+describe Fluent::CqlOutput do
   include Helpers
 
-  let(:driver) { Fluent::Test::BufferedOutputTestDriver.new(Fluent::CqlRbOutput, 'test') }
+  let(:driver) { Fluent::Test::BufferedOutputTestDriver.new(Fluent::CqlOutput, 'test') }
 
   after(:each) do
-    d = Fluent::Test::BufferedOutputTestDriver.new(Fluent::CqlRbOutput, 'test')
+    d = Fluent::Test::BufferedOutputTestDriver.new(Fluent::CqlOutput, 'test')
     d.configure(CONFIG)
     d.instance.connection.execute("TRUNCATE #{SPEC_COLUMN_FAMILY}")
   end
