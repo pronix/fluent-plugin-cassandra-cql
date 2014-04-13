@@ -1,8 +1,8 @@
 require 'spec_helper'
 Fluent::Test.setup
 
-SPEC_COLUMN_FAMILY = "spec_events"
-DATA_KEYS = "tag,time"
+SPEC_COLUMN_FAMILY = 'spec_events'
+DATA_KEYS = 'tag,time'
 
 CONFIG = %[
   host 127.0.0.1
@@ -15,13 +15,13 @@ CONFIG = %[
   pop_data_keys true
 ]
 
-describe Fluent::CassandraCqlOutput do
+describe Fluent::CqlRbOutput do
   include Helpers
 
-  let(:driver) { Fluent::Test::BufferedOutputTestDriver.new(Fluent::CassandraCqlOutput, 'test') }
+  let(:driver) { Fluent::Test::BufferedOutputTestDriver.new(Fluent::CqlRbOutput, 'test') }
 
   after(:each) do
-    d = Fluent::Test::BufferedOutputTestDriver.new(Fluent::CassandraCqlOutput, 'test')
+    d = Fluent::Test::BufferedOutputTestDriver.new(Fluent::CqlRbOutput, 'test')
     d.configure(CONFIG)
     d.instance.connection.execute("TRUNCATE #{SPEC_COLUMN_FAMILY}")
   end
@@ -127,7 +127,7 @@ describe Fluent::CassandraCqlOutput do
           write(driver, SPEC_COLUMN_FAMILY, false)
         end
 
-      end # context as columns  
+      end # context as columns
 
       it 'should not locate event after ttl has expired' do
         time = Time.now.to_i

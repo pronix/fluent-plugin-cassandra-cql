@@ -14,8 +14,8 @@ require 'rake'
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "fluent-plugin-cassandra-cql"
-  gem.homepage = "http://github.com/obieq/fluent-plugin-cassandra-cql"
+  gem.name = "fluent-plugin-cql-rb"
+  gem.homepage = "http://github.com/pronix/fluent-plugin-cql-rb"
   gem.license = "MIT"
   gem.summary = %Q{Fluent output plugin for Cassandra}
   gem.description = %Q{Fluent output plugin for Cassandra via CQL version 3.0.0}
@@ -30,7 +30,7 @@ Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "fluent-plugin-cassandra-cql #{version}"
+  rdoc.title = "fluent-plugin-cql-rb #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end

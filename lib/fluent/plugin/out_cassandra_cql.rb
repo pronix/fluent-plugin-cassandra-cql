@@ -1,11 +1,10 @@
-require 'cassandra-cql'
+require 'cql'
 require 'msgpack'
 require 'json'
 
 module Fluent
-
-  class CassandraCqlOutput < BufferedOutput
-    Fluent::Plugin.register_output('cassandra_cql', self)
+  class CqlRbOutput < BufferedOutput
+    Fluent::Plugin.register_output('cql_rb', self)
 
     config_param :host,          :string
     config_param :port,          :integer
@@ -17,7 +16,7 @@ module Fluent
 
     # remove keys from the fluentd json event as they're processed
     # for individual columns?
-    config_param :pop_data_keys, :bool, :default => true
+    config_param :pop_data_keys, :bool, default: true
 
     def connection
       @connection ||= get_connection(self.host, self.port, self.keyspace)
@@ -58,20 +57,20 @@ module Fluent
     end
 
     def write(chunk)
-      chunk.msgpack_each  { |record|
+      chunk.msgpack_each  do |record|
         values = build_insert_values_string(self.schema.keys, self.data_keys, record, self.pop_data_keys)
         cql = "INSERT INTO #{self.columnfamily} (#{self.schema.keys.join(',')}) " +
                             "VALUES (#{values}) " +
                             "USING TTL #{self.ttl}"
         @connection.execute(cql)
-      }
+      end
     end
 
     private
 
     def get_connection(host, port, keyspace)
-      connection_string = "#{host}:#{port}"
-      ::CassandraCQL::Database.new(connection_string, {:keyspace => "\"#{keyspace}\"", :cql_version => "3.0.0"})
+      client = ::Cql::Client.connect(hosts: [host], port: port.to_i)
+      client.use("\"#{keyspace}\"")
     end
 
     def build_insert_values_string(schema_keys, data_keys, record, pop_data_keys)
@@ -101,9 +100,7 @@ module Fluent
                   end
       end
 
-      return values.join(',')
+      values.join(',')
     end
-
   end
-
 end
