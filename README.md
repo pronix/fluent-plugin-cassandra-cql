@@ -49,6 +49,9 @@ via RubyGems
     </match>
 
 # Tests
+    ```
+    curl -X POST -d 'json={"id":1, "ts": 1, "payload": {"action":"login","user":2}}' http://127.0.0.1:8888/test.tag.here
+    ```
 
 rake rspec
 
