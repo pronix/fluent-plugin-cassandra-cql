@@ -27,7 +27,7 @@ module Fluent
 
       # perform validations
       raise ConfigError, "'Host' is required by Cassandra output (ex: localhost, 127.0.0.1, ec2-54-242-141-252.compute-1.amazonaws.com" if self.host.nil?
-      raise ConfigError, "'Port' is required by Cassandra output (ex: 9160)" if self.port.nil?
+      raise ConfigError, "'Port' is required by Cassandra output (ex: 9042)" if self.port.nil?
       raise ConfigError, "'Keyspace' is required by Cassandra output (ex: FluentdLoggers)" if self.keyspace.nil?
       raise ConfigError, "'ColumnFamily' is required by Cassandra output (ex: events)" if self.columnfamily.nil?
       raise ConfigError, "'Schema' is required by Cassandra output (ex: id,ts,payload)" if self.schema.nil?

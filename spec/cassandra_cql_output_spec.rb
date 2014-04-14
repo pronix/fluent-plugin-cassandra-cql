@@ -6,7 +6,7 @@ DATA_KEYS = 'tag,time'
 
 CONFIG = %[
   host 127.0.0.1
-  port 9160
+  port 9042
   keyspace FluentdLoggers
   columnfamily #{SPEC_COLUMN_FAMILY}
   ttl 0
@@ -37,7 +37,7 @@ describe Fluent::CqlOutput do
       driver.configure(CONFIG)
       driver.tag.should eq('test')
       driver.instance.host.should eq('127.0.0.1')
-      driver.instance.port.should eq(9160)
+      driver.instance.port.should eq(9042)
       driver.instance.keyspace.should eq('FluentdLoggers')
       driver.instance.columnfamily.should eq(SPEC_COLUMN_FAMILY)
       driver.instance.ttl.should eq(0)
