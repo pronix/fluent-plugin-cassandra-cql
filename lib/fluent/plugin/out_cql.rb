@@ -87,7 +87,7 @@ module Fluent
           end
         else
           case schema[schema_keys[index]]
-          when :string, :string
+          when :string, :text
             "'#{record[key]}'"
           when :map
             record[key].gsub('"',"'")
