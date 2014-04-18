@@ -77,9 +77,23 @@ module Fluent
     def build_insert_values_string(schema_keys, data_keys, record, pop_data_keys)
       values = data_keys.map.with_index do |key, index|
         if pop_data_keys
-          schema[schema_keys[index]] == :string ? "'#{record.delete(key)}'" : record.delete(key)
+          case schema[schema_keys[index]]
+          when :string, :text
+            "'#{record.delete(key)}'"
+          when :map
+            record.delete(key).gsub('"',"'")
+          else
+            record.delete(key)
+          end
         else
-          schema[schema_keys[index]] == :string ? "'#{record[key]}'" : record[key]
+          case schema[schema_keys[index]]
+          when :string, :string
+            "'#{record[key]}'"
+          when :map
+            record[key].gsub('"',"'")
+          else
+            record[key]
+          end
         end
       end
 
