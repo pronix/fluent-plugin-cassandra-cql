@@ -59,14 +59,24 @@ module Fluent
     def write(chunk)
       chunk.msgpack_each  do |record|
         values = build_insert_values_string(self.schema.keys, self.data_keys, record, self.pop_data_keys)
-        cql = "INSERT INTO #{self.columnfamily} (#{self.schema.keys.join(',')}) " +
-                            "VALUES (#{values}) " +
-                            "USING TTL #{self.ttl}"
-        @connection.execute(cql)
+        if values.class == Array
+          values.each do |val|
+            insert_to_db(val, @connection)
+          end
+        else
+          insert_to_db(values, @connection)
+        end
       end
     end
 
     private
+
+    def insert_to_db(val, con)
+      cql = "INSERT INTO #{self.columnfamily} (#{self.schema.keys.join(',')}) " +
+                          "VALUES (#{val}) " +
+                          "USING TTL #{self.ttl}"
+      con.execute(cql)
+    end
 
     def get_connection(host, port, keyspace)
       client = ::Cql::Client.connect(hosts: [host], port: port.to_i, default_consistency: :one)
@@ -74,7 +84,7 @@ module Fluent
       client
     end
 
-    def process_value(index, record, key)
+    def process_value(index, record, key, schema_keys)
       if pop_data_keys
         case schema[schema_keys[index]]
         when :string, :text
@@ -96,37 +106,38 @@ module Fluent
       end
     end
 
+    def gen_row_data(record, data_keys, schema_keys)
+      values = data_keys.map.with_index do |key, index|
+        process_value(index, record, key, schema_keys)
+      end
+      # if we have one more schema key than data keys,
+      # we can then infer that we should store the event
+      # as a string representation of the corresponding
+      # json object in the last schema column
+      if schema_keys.count == data_keys.count + 1
+        values << if record.count > 0
+                    "'#{record.to_json}'"
+                  else
+                    # by this point, the extra schema column has been
+                    # added to insert cql statement, so we must put
+                    # something in it
+                    # TODO: detect this scenario earlier and don't
+                    #       specify the column name/value at all
+                    #       when constructing the cql stmt
+                    "''"
+                  end
+      end
+
+      values.join(',')
+    end
+
     def build_insert_values_string(schema_keys, data_keys, record, pop_data_keys)
       if record.class == Array
-        record.each do |r|
-          values = data_keys.map.with_index do |key, index|
-            process_value(index, r, key)
-          end
+        record.map do |r|
+          gen_row_data(r, data_keys, schema_keys)
         end
       else
-        values = data_keys.map.with_index do |key, index|
-          process_value(index, record, key)
-        end
-
-        # if we have one more schema key than data keys,
-        # we can then infer that we should store the event
-        # as a string representation of the corresponding
-        # json object in the last schema column
-        if schema_keys.count == data_keys.count + 1
-          values << if record.count > 0
-                      "'#{record.to_json}'"
-                    else
-                      # by this point, the extra schema column has been
-                      # added to insert cql statement, so we must put
-                      # something in it
-                      # TODO: detect this scenario earlier and don't
-                      #       specify the column name/value at all
-                      #       when constructing the cql stmt
-                      "''"
-                    end
-        end
-
-        values.join(',')
+        gen_row_data(record, data_keys, schema_keys)
       end
     end
   end
