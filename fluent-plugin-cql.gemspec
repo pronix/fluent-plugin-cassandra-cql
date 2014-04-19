@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["obie quelland","Dmitry Vasilets"]
-  s.date = "2014-04-13"
+  s.date = "2014-04-19"
   s.description = "Fluent output plugin for Cassandra via CQL version 3.0.0"
   s.email = ["quelland@gmail.com","pronix.service@gmail.com"]
   s.extra_rdoc_files = [
