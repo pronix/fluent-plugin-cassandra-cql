@@ -91,7 +91,9 @@ module Fluent
         when :string, :text
           "'#{record.delete(key)}'"
         when :map
-          record.delete(key).to_s.gsub('"',"'").gsub('=>',':')
+          record.delete(key).inject({}) do |res,kv|
+            res.merge!({ kv[0].to_s => kv[1].to_s })
+          end.to_s.gsub('"',"'").gsub('=>',':')
         else
           record.delete(key)
         end
@@ -100,7 +102,9 @@ module Fluent
         when :string, :text
           "'#{record[key]}'"
         when :map
-          record[key].to_s.gsub('"',"'").gsub('=>',':')
+          record[key].inject({}) do |res,kv|
+            res.merge!({ kv[0].to_s => kv[1].to_s })
+          end.to_s.gsub('"',"'").gsub('=>',':')
         else
           record[key]
         end
