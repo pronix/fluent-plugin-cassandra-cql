@@ -91,7 +91,7 @@ module Fluent
         when :string, :text
           "'#{record.delete(key)}'"
         when :map
-          record.delete(key).gsub('"',"'")
+          record.delete(key).to_s.gsub('"',"'")
         else
           record.delete(key)
         end
@@ -100,7 +100,7 @@ module Fluent
         when :string, :text
           "'#{record[key]}'"
         when :map
-          record[key].gsub('"',"'")
+          record[key].to_s.gsub('"',"'")
         else
           record[key]
         end
