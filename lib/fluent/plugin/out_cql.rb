@@ -85,6 +85,7 @@ module Fluent
     end
 
     def process_value(index, record, key, schema_keys)
+      return 'now()' if key == 'id' # id should be timeuuid
       if pop_data_keys
         case schema[schema_keys[index]]
         when :string, :text
